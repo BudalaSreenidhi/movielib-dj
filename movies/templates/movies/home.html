@@ -1,0 +1,28 @@
+<!-- home.html -->
+{% extends 'base.html' %}
+
+{% block title %}Home - My Website{% endblock %}
+
+{% block content %}
+    <style>
+        .home-container {
+            background-color: #cfdeff; /* Light blue color */
+            padding: 20px;
+            border-radius: 8px;
+        }
+    </style>
+    <div class="home-container">
+        <h1>Welcome to the Movie Library</h1>
+        <form method="get" action="{% url 'search_movies' %}">
+            {% csrf_token %}
+            <input type="text" name="q" placeholder="Search for movies...">
+            <button type="submit">Search</button>
+        </form>
+
+        {% if user.is_authenticated %}
+            <p>Hello, {{ user.username }}. <a href="{% url 'logout' %}">Sign Out</a></p>
+        {% else %}
+            <p>You are not logged in. <a href="{% url 'signin' %}">Sign In</a> or <a href="{% url 'signup' %}">Sign Up</a></p>
+        {% endif %}
+    </div>
+{% endblock %}

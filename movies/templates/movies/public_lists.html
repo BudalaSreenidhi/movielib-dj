@@ -1,0 +1,22 @@
+<ul>
+    {% for list in public_lists %}
+    <li>
+        <h2>{{ list.name }}</h2>
+        <p>Created by {{ list.user.username }}</p>
+        <ul>
+            {% for movie in list.movies.all %}
+            <li>
+                {{ movie.title }} ({{ movie.year }})
+                <img src="{{ movie.poster }}" alt="Poster for {{ movie.title }}">
+            </li>
+            {% endfor %}
+        </ul>
+        <form method="post" action="{% url 'copy_list' %}">
+            {% csrf_token %}
+            <input type="hidden" name="list_id" value="{{ list.id }}">
+            <button type="submit" class="btn btn-primary">Add to My Lists</button>
+            <button type="submit" a href="{% url 'my_lists' %}">Back</button>
+        </form>
+    </li>
+    {% endfor %}
+</ul>

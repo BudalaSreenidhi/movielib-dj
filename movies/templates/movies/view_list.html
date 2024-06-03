@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ list.name }}</h1>
+<p>Created by {{ list.user.username }}</p>
+<form method="post" action="{% url 'delete_movies' list_id=list.id %}">
+    {% csrf_token %}
+    <ul>
+        {% for movie in list.movies.all %}
+        <li>
+            <input type="checkbox" name="movie_ids" value="{{ movie.id }}">
+            {{ movie.title }} ({{ movie.year }})
+            <img src="{{ movie.poster }}" alt="Poster for {{ movie.title }}">
+        </li>
+        {% endfor %}
+    </ul>
+    <button type="submit" class="btn btn-danger">Delete Selected Movies</button>
+</form>
+<a href="{% url 'add_to_list' list_id=list.id %}" class="btn btn-primary">Add Movie</a>
+<a href="{% url 'my_lists' %}" class="btn btn-secondary">Back</a>
+{% endblock %}

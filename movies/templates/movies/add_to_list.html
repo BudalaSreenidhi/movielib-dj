@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Add Movie</h2>
+<form method="post" action="{% url 'add_to_list' movie_list.id %}">
+    {% csrf_token %}
+    <input type="text" name="title" placeholder="Title">
+    <button type="submit">Search</button>
+    <a href="{% url 'create_list' %}" class="btn btn-secondary">Back</a>
+</form>
+{% if movies %}
+<form method="post" action="{% url 'select_movies' movie_list.id %}">
+    {% csrf_token %}
+    {% for movie in movies %}
+    <label>
+        <input type="checkbox" name="movie_id" value="{{ movie.imdbID }}">
+        {{ movie.Title }} ({{ movie.Year }})
+        <img src="{{ movie.Poster }}" alt="Poster for {{ movie.Title }}">
+    </label>
+    {% endfor %}
+    <button type="submit">Add Selected Movies</button>
+    <a href="{% url 'create_list' %}" class="btn btn-secondary">Back</a>
+</form>
+{% endif %}
+{% endblock %}

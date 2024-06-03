@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    .lists-container {
+        background-color: #ffe0f1; /* Baby pink color */
+        padding: 20px;
+        border-radius: 8px;
+    }
+</style>
+<div class="lists-container">
+    <h1>Movie Lists</h1>
+    <ul>
+        {% for list in lists %}
+        <li>
+            <a href="{% url 'view_list' list.id %}">{{ list.name }}</a> by {{ list.user.username }}
+            {% if list.is_public %}
+            (Public)
+            {% else %}
+            (Private)
+            {% endif %}
+            <form method="post" action="{% url 'delete_list' list.id %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Remove</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'create_list' %}" class="btn btn-primary">Create New List</a>
+    <a href="{% url 'get_public_lists' %}" class="btn btn-info">Show Public Lists</a>
+    <a href="{% url 'home' %}" class="btn btn-secondary">Home</a>
+    <ul id="publicListsContainer"></ul>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listener to the button
+    document.getElementById('showPublicListsBtn').addEventListener('click', function() {
+        // Make AJAX request to fetch public lists
+        fetch('{% url "get_public_lists" %}')
+            .then(response => response.json())
+            .then(data => {
+                // Update the DOM with fetched public lists
+                let publicListsContainer = document.getElementById('publicListsContainer');
+                publicListsContainer.innerHTML = ''; // Clear previous content
+                data.forEach(list => {
+                    let listItem = document.createElement('li');
+                    listItem.textContent = list.name + ' by ' + list.user;
+                    publicListsContainer.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error('Error fetching public lists:', error));
+    });
+});
+</script>
+{% endblock %}
